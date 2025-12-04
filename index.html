@@ -40,7 +40,7 @@
 
         /* 悬浮控制条样式 */
         .floating-controls {
-            position: absolute;
+            position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
@@ -184,7 +184,7 @@
             .floating-controls {
                 width: 95%;
                 padding: 8px 15px;
-                bottom: 60px;
+                bottom: 20px;
             }
             
             .control-btn {
@@ -202,7 +202,7 @@
         @media (max-width: 480px) {
             .floating-controls {
                 padding: 6px 12px;
-                bottom: 60px;
+                bottom: 20px;
                 gap: 10px;
             }
             
@@ -276,8 +276,6 @@
         let currentMediaSrc = null;
         let currentMediaType = null; // 'video' 或 'image'
         let imageTexture = null;
-        let keysPressed = {};
-        const KEY_SPEED = 0.5; // 键盘控制转动速度
         
         // 控制相关变量（类似于图片查看器）
         let isUserInteracting = false;
@@ -285,6 +283,14 @@
         let onPointerDownLon = 0, onPointerDownLat = 0;
         let lon = 0, lat = 0;
         let phi = 0, theta = 0;
+        
+        // 键盘相关变量
+        let keysPressed = {};
+        const KEY_SPEED = 0.5; // 键盘控制转动速度
+
+        // 双击相关变量
+        let lastClickTime = 0;
+        const DOUBLE_CLICK_DELAY = 300; // 双击检测时间间隔（毫秒）
         
         // 触摸缩放相关
         let initialPinchDistance = 0;
@@ -872,6 +878,51 @@
             lat = Math.max(-85, Math.min(85, lat));
         }
 
+        // 切换全屏模式
+        function toggleFullscreen() {
+            const container = document.getElementById('player-container');
+            
+            if (!document.fullscreenElement && !document.webkitFullscreenElement && 
+                !document.mozFullScreenElement && !document.msFullscreenElement) {
+                // 进入全屏
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.mozRequestFullScreen) {
+                    container.mozRequestFullScreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
+            } else {
+                // 退出全屏
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // 监听全屏变化，更新UI
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || 
+                                document.mozFullScreenElement || document.msFullscreenElement);
+            
+            // 可以在全屏时调整UI，例如隐藏某些元素或调整控制条位置
+            const floatingControls = document.getElementById('floating-controls');
+
+        }
+
 
         // DOM加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -1024,6 +1075,24 @@
                 if (validKeys.includes(e.code)) {
                     delete keysPressed[e.code];
                 }
+            });
+
+            // 双击播放器容器实现全屏
+            const playerContainer = document.getElementById('player-container');
+            playerContainer.addEventListener('click', function(e) {
+                // 防止事件冒泡到控制按钮
+                if (e.target.closest('.floating-controls')) return;
+                
+                const currentTime = Date.now();
+                const timeDiff = currentTime - lastClickTime;
+                
+                if (timeDiff < DOUBLE_CLICK_DELAY) {
+                    // 双击事件
+                    e.preventDefault();
+                    toggleFullscreen();
+                }
+                
+                lastClickTime = currentTime;
             });
 
             // 窗口失去焦点时清除所有按键状态
