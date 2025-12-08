@@ -246,13 +246,13 @@
                     <i class="fas fa-volume-up"></i>
                 </button>
             </div>
-            
+
             <div class="progress-container" id="progress-container">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
-            
+
             <div class="time-display" id="time-display">00:00 / 00:00</div>
-            
+
             <div class="controls-right">
                 <button id="gyro-btn" class="control-btn" title="陀螺仪控制">
                     <i class="fas fa-compass"></i>
@@ -844,12 +844,13 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
-        
+
+
         // 更新播放按钮状态
         function updatePlayButton() {
             const playPauseBtn = document.getElementById('play-pause-btn');
-            playPauseBtn.innerHTML = isPlaying ? 
-                '<i class="fas fa-pause"></i>' : 
+            playPauseBtn.innerHTML = isPlaying ?
+                '<i class="fas fa-pause"></i>' :
                 '<i class="fas fa-play"></i>';
         }
 
@@ -1024,9 +1025,37 @@
             });
 
             // 键盘事件监听
-            // 键盘事件监听
             document.addEventListener('keydown', function(e) {
-                
+
+                // Ctrl+V 粘贴图像
+                if ((e.ctrlKey || e.metaKey) && e.code === 'KeyV') {
+                    // 防止在输入框中触发
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+                    e.preventDefault(); // 阻止默认粘贴行为
+
+                    // 从剪贴板读取图像
+                    navigator.clipboard.read().then(clipboardItems => {
+                        for (const clipboardItem of clipboardItems) {
+                            // 查找图像类型
+                            for (const type of clipboardItem.types) {
+                                if (type.startsWith('image/')) {
+                                    clipboardItem.getType(type).then(blob => {
+                                        // 创建文件对象
+                                        const file = new File([blob], 'pasted-image.' + type.split('/')[1], { type: type });
+                                        loadMediaFile(file);
+                                    });
+                                    return;
+                                }
+                            }
+                        }
+                        console.log('剪贴板中没有找到图像数据');
+                    }).catch(err => {
+                        console.error('读取剪贴板失败:', err);
+                    });
+                    return;
+                }
+
                 // Ctrl+O 打开文件
                 if ((e.ctrlKey || e.metaKey) && e.code === 'KeyO') {
                     e.preventDefault(); // 阻止浏览器默认的打开文件对话框
@@ -1042,21 +1071,21 @@
                     'Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
                     'KeyW', 'KeyA', 'KeyS', 'KeyD'
                 ];
-                
+
                 // 原有的空格键和其他按键处理...
                 if (!validKeys.includes(e.code)) return;
-                
+
                 // 阻止默认行为（防止空格键滚动页面）
                 e.preventDefault();
-                
+
                 // 记录按键状态
                 keysPressed[e.code] = true;
-                
+
                 // 空格键控制播放/暂停
                 if (e.code === 'Space') {
                     // 防止在输入框中触发
                     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-                    
+
                     // 触发播放/暂停按钮点击
                     const playPauseBtn = document.getElementById('play-pause-btn');
                     if (playPauseBtn && !playPauseBtn.disabled) {
