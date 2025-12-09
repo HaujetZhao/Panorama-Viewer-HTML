@@ -179,20 +179,138 @@
             display: none;
         }
 
+        /* 初始提示屏幕样式 */
+        #hint {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2a3a5e 100%);
+            z-index: 1000;
+        }
+
+        .intro-content {
+            max-width: 600px;
+            padding: 40px;
+            background-color: rgba(45, 45, 45, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .intro-content:hover {
+            background-color: rgba(60, 60, 60, 0.9);
+        }
+
+        .intro-content i {
+            font-size: 80px;
+            color: #8a8aff;
+            margin-bottom: 20px;
+        }
+
+        .intro-content h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .intro-content p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature i {
+            font-size: 28px !important;
+            margin-bottom: 0 !important;
+            color: #aaaaff;
+        }
+
+        .feature span {
+            font-size: 14px;
+            color: #bbb;
+        }
+
+        .usage-tips {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .usage-tips .tip {
+            font-size: 14px;
+            color: #8a8aff;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .usage-tips .tip i {
+            font-size: 16px !important;
+            margin-bottom: 0 !important;
+        }
+
         /* 移动端适配 */
         @media (max-width: 768px) {
+            .intro-content {
+                max-width: 90%;
+                padding: 30px 20px;
+            }
+
+            .intro-content i {
+                font-size: 60px;
+            }
+
+            .intro-content h1 {
+                font-size: 28px;
+            }
+
+            .intro-content p {
+                font-size: 16px;
+            }
+
+            .features {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .feature {
+                min-width: 100px;
+            }
+
             .floating-controls {
                 width: 95%;
                 padding: 8px 15px;
                 bottom: 20px;
             }
-            
+
             .control-btn {
                 width: 35px;
                 height: 35px;
                 font-size: 0.9rem;
             }
-            
+
             .time-display {
                 min-width: 80px;
                 font-size: 0.8rem;
@@ -200,23 +318,55 @@
         }
 
         @media (max-width: 480px) {
+            .intro-content {
+                padding: 20px 15px;
+            }
+
+            .intro-content i {
+                font-size: 50px;
+            }
+
+            .intro-content h1 {
+                font-size: 24px;
+            }
+
+            .intro-content p {
+                font-size: 14px;
+            }
+
+            .features {
+                gap: 15px;
+            }
+
+            .feature i {
+                font-size: 24px !important;
+            }
+
+            .feature span {
+                font-size: 12px;
+            }
+
+            .usage-tips .tip {
+                font-size: 12px;
+            }
+
             .floating-controls {
                 padding: 6px 12px;
                 bottom: 20px;
                 gap: 10px;
             }
-            
+
             .control-btn {
                 width: 32px;
                 height: 32px;
                 font-size: 0.8rem;
             }
-            
+
             .time-display {
                 min-width: 70px;
                 font-size: 0.75rem;
             }
-            
+
             .controls-left, .controls-right {
                 gap: 6px;
             }
@@ -225,9 +375,45 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- 初始提示屏幕 -->
+    <div id="hint">
+        <div class="intro-content">
+            <i class="fas fa-vr-cardboard"></i>
+            <h1>全景视频/照片播放器</h1>
+            <div>
+                <p>点击选择要打开的媒体文件（纯本地处理）</p>
+            </div>
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-video"></i>
+                    <span>全景视频</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-image"></i>
+                    <span>全景图片</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-compass"></i>
+                    <span>陀螺仪控制</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <span>拖拽旋转</span>
+                </div>
+            </div>
+            <!-- <div class="usage-tips">
+                <p class="tip"><i class="fas fa-arrow-down"></i> 拖放媒体文件到此处</p>
+                <p class="tip"><i class="fas fa-paste"></i> 粘贴图像 (Ctrl+V)</p>
+                <p class="tip"><i class="fas fa-folder-open"></i> 从下方控制栏打开文件</p>
+                <p class="tip"><i class="fas fa-space-shuttle"></i> 空格键播放/暂停</p>
+                <p class="tip"><i class="fas fa-expand"></i> 双击全屏</p>
+            </div> -->
+        </div>
+    </div>
+
     <!-- 隐藏的文件输入 -->
     <input type="file" id="file-input" class="hidden" accept="video/*,image/*">
-    
+
     <!-- 播放器容器，占满整个页面 -->
     <div class="player-container" id="player-container">
         <div id="video-container"></div>
@@ -236,10 +422,10 @@
         <!-- 悬浮控制条 -->
         <div class="floating-controls" id="floating-controls">
             <div class="controls-left">
-                <button id="open-btn" class="control-btn" title="打开文件">
+                <button id="open-btn" class="control-btn" title="打开文件 (Ctrl+O)">
                     <i class="fas fa-folder-open"></i>
                 </button>
-                <button id="play-pause-btn" class="control-btn" title="播放/暂停" disabled>
+                <button id="play-pause-btn" class="control-btn" title="播放/暂停 (空格键)" disabled>
                     <i class="fas fa-play"></i>
                 </button>
                 <button id="volume-btn" class="control-btn" title="静音/取消静音" disabled>
@@ -724,11 +910,11 @@
                 isPlaying = false;
                 updatePlayButton();
             }
-            
+
             // 创建文件URL
             const mediaURL = URL.createObjectURL(file);
             currentMediaSrc = mediaURL;
-            
+
             // 根据文件类型加载
             if (file.type.startsWith('video/')) {
                 currentMediaType = 'video';
@@ -739,6 +925,12 @@
             } else {
                 alert('不支持的文件类型，请选择视频或图片文件');
                 return;
+            }
+
+            // 隐藏介绍屏幕
+            const hint = document.getElementById('hint');
+            if (hint) {
+                hint.style.display = 'none';
             }
         }
         
@@ -929,7 +1121,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化Three.js场景
             initThreeJS();
-            
+
+            // 介绍屏幕点击事件 - 打开文件选择器
+            document.querySelector('.intro-content').addEventListener('click', function(e) {
+                e.stopPropagation(); // 防止事件冒泡到父元素
+                document.getElementById('file-input').click();
+            });
+
             // 打开文件按钮
             document.getElementById('open-btn').addEventListener('click', function() {
                 document.getElementById('file-input').click();
@@ -1014,14 +1212,13 @@
             document.addEventListener('drop', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                
+
                 dragOverlay.classList.remove('active');
                 document.body.classList.remove('drag-over');
-                
+
                 if (e.dataTransfer.files.length > 0) {
                     loadMediaFile(e.dataTransfer.files[0]);
                 }
-
             });
 
             // 键盘事件监听
